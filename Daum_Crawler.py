@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup as bs
 
 headers = { "User-Agent" : "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Mobile Safari/537.36"
 }
-pages = 1
+pages = 0
 sectors = ["economic","politics","society"]
 sector = ""
 page = 0
@@ -19,34 +19,39 @@ while True:
         html = bs(res.text, 'html.parser')
         cont = html.find('main')
         try:
-            items = cont.findAll('li')
+            items = cont.find_all('li')
         except Exception as e:
             print(str(e))
             break
+            raise(e)
+
         else:
             for item in items:
+                ## 타이틀 가져오기
+                link = item.a['href']
                 tit = item.find('strong','tit_thumb')
                 tit_cmtrank = item.find('strong','tit_cmtrank')
                 if tit != None:
                     try:
                         result.append({
-                        'page': i,
+                        'url': link,
                         'title': tit[span].get_text()
                         })
                     except:
                         result.append({
-                            'page': i,
+                            'url': link,
                             'title': tit.get_text()
                         })
                 elif tit_cmtrank != None :
                    result.append({
-                       'page': i,
+                       'url': link,
                        'title': tit_cmtrank.get_text()
                    })
                 else:
                     pass
+                result_url = ""
     i = i+1
-    if i == 3:
+    if i == 1:
        print(f"reached page {i} break")
        break
 
